@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>移动原声带 · 设计流程展厅</title>
+  <link rel="stylesheet" href="design-flow.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">♪</span><span>移动原声带<small>Motion Score</small></span></a>
+      <a class="demo-link" href="motion-score-html.html">打开 14 页可交互原型 <span>↗</span></a>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">DESIGN FLOW · 2026</p>
+      <h1>让每一次移动，<br><em>都有自己的声音。</em></h1>
+      <p class="intro-copy">这是移动原声带的完整视觉流程。点击任意页面查看大图，沿着流程节点理解用户如何从场景进入，到生成、播放，再把一段路收藏成路线卡片。</p>
+      <div class="stats"><span><b>4</b> 视觉方案</span><span><b>10</b> 主流程节点</span><span><b>2</b> 运动分支</span></div>
+    </section>
+
+    <section class="flow-section">
+      <div class="section-heading"><div><p class="eyebrow">PRIMARY JOURNEY</p><h2>主流程 · 从出发到收藏</h2></div><span class="route-label">01 — 10</span></div>
+      <div class="flow-track" id="flowTrack"></div>
+    </section>
+
+    <section class="gallery-section" id="gallery">
+      <div class="section-heading"><div><p class="eyebrow">VISUAL BOARDS</p><h2>全部页面意向图</h2></div><div class="filters" role="tablist"><button class="filter active" data-filter="all">全部</button><button class="filter" data-filter="core">核心流程</button><button class="filter" data-filter="secondary">扩展页面</button><button class="filter" data-filter="fitness">无路线运动</button></div></div>
+      <div class="board-grid" id="boardGrid"></div>
+    </section>
+
+    <section class="branch-section">
+      <div class="section-heading"><div><p class="eyebrow">TWO CONTEXTS</p><h2>两种音乐陪伴逻辑</h2></div></div>
+      <div class="branch-grid"><article class="branch-card route"><span class="branch-icon">⌁</span><div><h3>有路线移动</h3><p>跑步户外、驾车、长途旅行。地图路线是音乐变化的骨架，主路线高亮，背景地图退后。</p><div class="branch-flow">场景 → 路线 → 旅程灯带 → 路线卡片</div></div></article><article class="branch-card indoor"><span class="branch-icon">◒</span><div><h3>无路线运动</h3><p>跑步机、健身房、室内单车。用时长、身体节奏和运动密度推动音乐，不依赖地理位置。</p><div class="branch-flow">运动类型 → 节奏 → 训练原声带 → 收藏</div></div></article></div>
+    </section>
+
+    <footer><span>移动原声带 · Motion Score</span><a href="index.html">进入产品 Demo ↗</a></footer>
+  </main>
+  <div class="lightbox" id="lightbox" aria-hidden="true"><button class="lightbox-close" id="closeLightbox">×</button><img id="lightboxImage" alt="页面意向图大图" /><div class="lightbox-caption" id="lightboxCaption"></div></div>
+  <script src="design-flow.js"></script>
+</body>
+</html>

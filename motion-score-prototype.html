@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>移动原声带 · 可交互原型</title>
+  <style>
+    :root{--bg:#070d12;--panel:#101b23;--line:#263944;--muted:#8fa0aa;--ink:#f3f7f8;--lime:#d8ff58;--coral:#ff8d70;--purple:#bba5ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#213744 0,#070d12 45%),#070d12;color:var(--ink);font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif}.shell{max-width:1320px;margin:auto;padding:0 28px 40px}.topbar{height:76px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.brand{display:flex;gap:11px;align-items:center;font-weight:800;letter-spacing:.02em}.mark{display:grid;place-items:center;width:31px;height:31px;border-radius:10px;background:var(--lime);color:#111;font-size:19px}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.13em;margin-top:2px}.back{color:var(--muted);text-decoration:none;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:8px 13px}.layout{display:grid;grid-template-columns:260px minmax(300px,460px) 300px;gap:42px;align-items:start;padding-top:40px}.eyebrow{font-size:10px;letter-spacing:.2em;color:var(--lime);font-weight:800}.side h1{font-size:34px;line-height:1.15;letter-spacing:-.06em;margin:14px 0}.side-copy{color:var(--muted);font-size:12px;line-height:1.7;margin-bottom:28px}.progress{height:3px;background:#1e2b33;border-radius:9px;overflow:hidden;margin:15px 0 21px}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--lime),#ffc766,var(--coral),var(--purple));width:7%;transition:.28s}.step-list{display:grid;gap:5px}.step{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:12px;color:var(--muted);font-size:12px;cursor:pointer;transition:.16s}.step:hover,.step.active{background:#14232c;color:#fff}.step.active{box-shadow:inset 3px 0 var(--lime)}.step b{font-size:10px;color:#637580;width:20px}.step.active b{color:var(--lime)}.viewer{text-align:center}.device{background:#030609;border:8px solid #27323e;border-radius:39px;padding:7px;box-shadow:0 28px 65px #000b,0 0 0 1px #65717c;display:inline-block;line-height:0;max-width:100%}.device img{width:min(100%,395px);height:auto;border-radius:26px;display:block}.caption{margin-top:16px;color:var(--muted);font-size:11px}.caption strong{color:#fff;font-size:13px;margin-right:8px}.actions{background:rgba(16,27,35,.92);border:1px solid var(--line);border-radius:21px;padding:18px;position:sticky;top:24px}.actions h2{font-size:15px;margin:0 0 4px}.actions>p{color:var(--muted);font-size:11px;line-height:1.5;margin:0 0 16px}.action-list{display:grid;gap:8px}.action{width:100%;border:1px solid #37505e;background:#14242e;color:#eef4f5;text-align:left;padding:12px 13px;border-radius:13px;display:flex;justify-content:space-between;align-items:center;font-size:12px;cursor:pointer;transition:.15s}.action:hover{background:var(--lime);color:#101610;border-color:var(--lime);transform:translateX(2px)}.action .arrow{font-size:16px}.aux{display:flex;gap:8px;margin-top:14px}.aux button{flex:1;border:1px solid var(--line);background:transparent;color:var(--muted);padding:9px;border-radius:10px;cursor:pointer}.aux button:hover{border-color:var(--lime);color:var(--lime)}.note{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:#70818c;font-size:10px;line-height:1.6}.branch{display:inline-flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid #3e5260;border-radius:999px;padding:5px 8px;color:var(--muted);font-size:10px}.chip.on{border-color:var(--lime);color:var(--lime)}@media(max-width:980px){.layout{grid-template-columns:210px minmax(280px,430px);gap:24px}.actions{grid-column:1/-1;position:static}.action-list{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.shell{padding:0 15px 24px}.topbar{height:65px}.layout{display:block;padding-top:23px}.side{margin-bottom:22px}.side h1{font-size:30px}.step-list{display:flex;overflow:auto;padding-bottom:3px}.step{flex:0 0 auto;padding:8px 10px}.step p{display:none}.viewer{margin-bottom:22px}.device{border-width:6px;border-radius:31px}.device img{border-radius:22px}.actions{padding:15px}.action-list{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar"><a class="brand" href="index.html"><span class="mark">♪</span><span>移动原声带<small>MOTION SCORE · INTERACTIVE PROTOTYPE</small></span></a><a class="back" href="design-flow.html">返回设计展厅 ↗</a></header>
+    <div class="layout">
+      <aside class="side"><div class="eyebrow">USER JOURNEY</div><h1>让这段路<br><span style="color:var(--lime)">有自己的声音。</span></h1><p class="side-copy">这是 14 个页面组成的可点击原型。每一步都对应一个真实操作：选择场景、设置旅程、播放陪伴、收藏和复用。</p><div class="progress"><i id="progressBar"></i></div><div class="step-list" id="stepList"></div></aside>
+      <section class="viewer"><div class="device"><img id="screenImage" alt="当前移动原声带页面"></div><div class="caption"><strong id="screenTitle"></strong><span id="screenDesc"></span></div></section>
+      <aside class="actions"><div class="eyebrow">NEXT ACTION</div><h2 id="actionTitle">怎么继续</h2><p id="actionDesc">选择一个动作，体验页面之间的跳转。</p><div class="action-list" id="actionList"></div><div class="aux"><button id="prevBtn">← 上一步</button><button id="nextBtn">下一步 →</button></div><div class="note">所有音乐、路线和社区内容均为演示数据。原型重点展示产品形态和跳转逻辑。</div><div class="branch"><span class="chip on">有路线移动</span><span class="chip">无路线运动</span></div></aside>
+    </div>
+  </main>
+  <script>
+    const screens=[
+      ['首页','情境推荐入口','design-assets/hd-pages/01-home.png',[['开始一段移动原声带',1]]],
+      ['选择场景','跑步 / 驾车 / 不同的音乐叙事','design-assets/hd-pages/02-scene.png',[['选择跑步 · 设置路线',8],['选择驾车 · 设置路线',8],['进入室内运动',10]]],
+      ['户外播放','路线灯带正在陪你移动','design-assets/hd-pages/03-outdoor-play.png',[['结束本次原声带',3]]],
+      ['路线卡片','一段路，收藏成自己的声音','design-assets/hd-pages/04-route-card.png',[['复用这段原声带',8],['发布到发现',9]]],
+      ['发现社区','浏览别人的移动原声带','design-assets/hd-pages/05-discover.png',[['打开上海 → 厦门',5],['复用这段路线',8]]],
+      ['路线详情','一张卡片，完整记录一段旅程','design-assets/hd-pages/06-route-detail.png',[['复用这段原声带',8]]],
+      ['我的移动轨迹','个人路线收藏与分享','design-assets/hd-pages/07-profile.png',[['打开路线收藏',5],['设置 QQ 音乐偏好',7]]],
+      ['QQ 音乐偏好','让推荐更像你','design-assets/hd-pages/08-preferences.png',[['重新生成偏好',1],['返回路线设置',8]]],
+      ['路线设置','为这段旅程设置音乐密度','design-assets/hd-pages/09-route-setup.png',[['开始这段旅程',2]]],
+      ['编辑并发布','决定谁能看见和复用','design-assets/hd-pages/10-publish.png',[['发布卡片',4],['保存图片后返回',5]]],
+      ['室内运动选择','没有路线，也有节奏','design-assets/hd-pages/11-indoor-select.png',[['选择跑步机',11],['选择健身房',12]]],
+      ['跑步机播放','音乐跟着身体节奏变化','design-assets/hd-pages/12-treadmill.png',[['完成训练',13]]],
+      ['健身训练设置','今天练什么','design-assets/hd-pages/13-gym-setup.png',[['生成训练原声带',11]]],
+      ['训练完成卡片','把训练收藏成原声带','design-assets/hd-pages/14-workout-card.png',[['查看训练收藏',6],['再来一段室内运动',10]]]
+    ];
+    let current=0;
+    const $=s=>document.querySelector(s), image=$('#screenImage'), title=$('#screenTitle'), desc=$('#screenDesc'), actions=$('#actionList');
+    function render(){const s=screens[current];image.src=s[2];image.alt=`${s[0]}：${s[1]}`;title.textContent=`${String(current+1).padStart(2,'0')} · ${s[0]}`;desc.textContent=s[1];$('#progressBar').style.width=`${((current+1)/screens.length)*100}%`;$('#actionTitle').textContent=current===13?'下一步':'怎么继续';actions.innerHTML=s[3].map(([label,target])=>`<button class="action" data-target="${target}"><span>${label}</span><span class="arrow">→</span></button>`).join('');document.querySelectorAll('.action').forEach(b=>b.onclick=()=>go(Number(b.dataset.target)));document.querySelectorAll('.step').forEach((b,i)=>b.classList.toggle('active',i===current));$('#prevBtn').disabled=current===0;$('#nextBtn').textContent=current===screens.length-1?'回到首页':'下一步 →';}
+    function go(n){current=Math.max(0,Math.min(screens.length-1,n));render();window.scrollTo({top:0,behavior:'smooth'})}
+    $('#prevBtn').onclick=()=>go(current-1);$('#nextBtn').onclick=()=>go(current===screens.length-1?0:current+1);
+    $('#stepList').innerHTML=screens.map((s,i)=>`<button class="step" data-step="${i}"><b>${String(i+1).padStart(2,'0')}</b><span>${s[0]}</span></button>`).join('');document.querySelectorAll('.step').forEach(b=>b.onclick=()=>go(Number(b.dataset.step)));render();
+  </script>
+</body>
+</html>
+
