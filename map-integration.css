@@ -1,0 +1,63 @@
+/* Share the original screen's dark frame, rounded cards and lime accents. */
+.geo-widget{position:relative;color:#edf3f7;background:linear-gradient(145deg,#0c202a,#06141d);border:1px solid #294451;border-radius:22px;padding:0;overflow:hidden;font-size:13px;line-height:1.5;box-shadow:0 8px 30px #0002}
+.geo-heading,.geo-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.geo-heading{padding:14px 14px 12px}
+.geo-heading strong{flex:1;font-size:16px;font-weight:600}
+.geo-widget button{min-height:40px;padding:7px 12px;border:1px solid #375461;border-radius:20px;background:#102934;color:#e7eff5;font:inherit;font-size:12px;transition:background .15s,border-color .15s}
+.geo-widget button:hover{background:#1a3540;border-color:#66847e}
+.geo-widget button:disabled{opacity:.45;cursor:wait}
+.geo-widget #geo-plan,.geo-actions #geo-track{background:#d7ff5b;color:#14202a;border-color:#d7ff5b;font-weight:600}
+.geo-canvas{position:relative;width:100%;aspect-ratio:500/420;margin:0;overflow:hidden;background:#182d38;isolation:isolate}
+.geo-canvas img,.geo-canvas svg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.geo-canvas svg{pointer-events:none;z-index:2}
+.geo-map-error{position:absolute;inset:0;display:grid;place-items:center;padding:36px;text-align:center;color:#c7d6e0;font-size:13px;background:linear-gradient(145deg,#142c38,#091b25)}
+.geo-zoom{position:absolute;z-index:3;right:12px;top:12px;display:grid;gap:6px;padding:5px;background:#061720e8;border:1px solid #51677280;border-radius:24px;box-shadow:0 4px 18px #0003;backdrop-filter:blur(10px)}
+.geo-zoom button{width:36px;height:36px;min-height:36px;padding:0;background:transparent;border:0;border-radius:50%;font-size:20px}
+.geo-zoom button:last-child{font-size:13px}
+.geo-legend{display:flex;gap:16px;flex-wrap:wrap;padding:13px 14px 0;font-size:11px}
+.geo-legend span{display:flex;align-items:center;gap:6px}
+.geo-legend span:before{content:"";width:14px;height:3px;border-radius:3px;background:currentColor}
+.geo-legend span:first-child{color:#ffbc5b}.geo-legend span:last-child{color:#d7ff5b}
+.geo-legend span:first-child:before{background:linear-gradient(90deg,#a4e632,#ffbc5b,#f66f86)}
+.geo-choices{display:flex;gap:8px;padding:12px 14px 0}
+.geo-choices button{flex:1;min-width:0;padding:9px 8px;border-radius:14px;text-align:left}
+.geo-choices strong,.geo-choices span{display:block}
+.geo-choices span{margin-top:4px;color:#a9bdc9;font-size:11px}
+.geo-choices button[aria-pressed="true"]{background:#244130;border-color:#d7ff5b;color:#d7ff5b}
+.geo-choices button[aria-pressed="true"] span{color:#d6eac3}
+.geo-widget p{margin:8px 14px;font-size:12px;color:#b7c9d6;overflow-wrap:anywhere}
+.geo-widget #geo-stats{font-size:13px;color:#eff5f8;font-variant-numeric:tabular-nums}
+.geo-widget #geo-status{color:#bacbd6}
+.geo-actions{margin:14px;gap:8px}
+.geo-actions #geo-retry{margin-left:auto;background:transparent;color:#a9bdc9;border-color:transparent}
+.geo-widget .geo-note{margin:0 14px 16px;padding-top:12px;border-top:1px solid #29445180;font-size:11px;color:#93aab9}
+#mobile-map-summary{padding:8px 14px 20px;background:linear-gradient(#04131c,#071820)}
+#mobile-map{padding:16px 14px 22px;background:linear-gradient(155deg,#0b202b,#04131cfb);border-top:1px solid #294451;border-radius:24px 24px 0 0}
+#mobile-map .sheet-heading{padding:0 2px 14px}
+#mobile-map .sheet-heading h2{font-size:20px}
+#mobile-map-expanded{margin:0}
+#mobile-map-expanded .geo-widget{border:0;background:transparent;border-radius:16px;box-shadow:none}
+#mobile-map-expanded .geo-heading{padding:0 2px 12px}
+#mobile-map-expanded .geo-heading strong{font-size:13px;color:#a9c0cd}
+#mobile-map-expanded .geo-canvas{height:clamp(260px,48dvh,480px);aspect-ratio:auto;border:1px solid #35505f;border-radius:20px}
+#mobile-map-expanded .geo-legend,#mobile-map-expanded p{padding-left:2px;padding-right:2px;margin-left:0;margin-right:0}
+#mobile-map-expanded .geo-actions{margin-left:0;margin-right:0}
+#mobile-map-expanded .geo-choices{padding-left:0;padding-right:0}
+#mobile-map-expanded .geo-note{padding-left:2px;padding-right:2px}
+/* Fill the whole original map slot. Controls float above it instead of shrinking it. */
+.geo-inline{position:absolute;z-index:6;left:17.9%;top:25.4%;width:64.3%;height:26.5%;border-radius:2cqw;border-color:#345160;box-shadow:0 5px 24px #0003;isolation:isolate}
+.geo-inline .geo-canvas{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;border-radius:0}
+.geo-inline .geo-heading{position:absolute;z-index:4;inset:8px 8px auto;gap:6px;padding:0;flex-wrap:nowrap}
+.geo-inline .geo-heading strong{flex:1;font-size:11px;color:#e7f0f5;padding:7px 9px;background:#061720e8;border:1px solid #51677280;border-radius:18px;white-space:nowrap;backdrop-filter:blur(10px)}
+.geo-inline .geo-heading button{min-height:32px;padding:5px 10px;font-size:11px;white-space:nowrap;background:#061720e8;backdrop-filter:blur(10px)}
+.geo-inline .geo-heading #geo-plan{background:#d7ff5b}
+.geo-inline .geo-legend,.geo-inline .geo-actions,.geo-inline .geo-note,.geo-inline #geo-stats{display:none}
+.geo-inline #geo-status{position:absolute;z-index:4;left:8px;right:62px;top:47px;max-height:3.9em;overflow:hidden;margin:0;padding:6px 9px;border-radius:12px;font-size:11px;line-height:1.4;color:#d0dee7;background:#061720e0;backdrop-filter:blur(10px);pointer-events:none}
+.geo-inline .geo-zoom{top:auto;bottom:22px;right:8px;gap:2px;padding:3px;border-radius:20px}
+.geo-inline .geo-zoom button{width:30px;height:30px;min-height:30px;font-size:18px}
+.geo-inline .geo-zoom button:last-child{font-size:11px}
+.geo-inline .geo-choices{position:absolute;z-index:4;left:8px;right:54px;bottom:27px;padding:0;gap:5px}
+.geo-inline .geo-choices button{flex:0 1 auto;min-height:30px;padding:5px 11px;font-size:11px;text-align:center;border-radius:18px;background:#061720e8;backdrop-filter:blur(10px)}
+.geo-inline .geo-choices button[aria-pressed="true"]{background:#d7ff5b;color:#14202a;border-color:#d7ff5b}
+.geo-inline .geo-choices span{display:none}
+@media(prefers-reduced-motion:reduce){.geo-widget button{transition:none}}

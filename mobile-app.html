@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07151d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>移动原声带 · 手机体验</title>
+  <link rel="stylesheet" href="design-pages.css?v=1">
+  <link rel="stylesheet" href="mobile-app.css?v=7">
+  <link rel="stylesheet" href="map-integration.css?v=3">
+</head>
+<body>
+  <main class="mobile-viewer" aria-label="移动原声带手机体验">
+    <div class="mobile-status" aria-hidden="true">
+      <span>9:41</span>
+      <span class="mobile-status-icons">
+        <svg class="status-signal" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="10" width="3" height="4" rx=".8"/><rect x="5" y="7" width="3" height="7" rx=".8"/><rect x="10" y="4" width="3" height="10" rx=".8"/><rect x="15" y="1" width="3" height="13" rx=".8"/></svg>
+        <svg class="status-wifi" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 4.5a12 12 0 0 1 17 0M4.4 7.5a8 8 0 0 1 11.2 0M7.3 10.4a3.9 3.9 0 0 1 5.4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="13" r="1"/></svg>
+        <svg class="status-battery" viewBox="0 0 28 14" xmlns="http://www.w3.org/2000/svg"><rect x=".75" y="1.25" width="23" height="11.5" rx="2.6" fill="none" stroke="currentColor" stroke-opacity=".65" stroke-width="1.5"/><rect x="3" y="3.5" width="18.5" height="7" rx="1"/><path d="M25.5 4.5v5a2.5 2.5 0 0 0 0-5Z" opacity=".65"/></svg>
+      </span>
+    </div>
+    <section class="viewer" id="mobile-content" aria-label="当前页面"><div class="phone"><div class="screen" id="screen"></div><section id="mobile-map-summary" hidden></section></div></section>
+    <div id="mobile-notice" class="mobile-notice" role="status" hidden></div>
+    <div class="mobile-toolbar"><button id="mobile-primary" onclick="MotionMobile.primary()">室内运动</button><button id="mobile-map-link" onclick="MotionMobile.openMap()" hidden>轨迹地图</button><button onclick="MotionMobile.tools()">更多操作 ···</button></div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="底部导航">
+      <button data-tab="home" onclick="MotionMobile.home()"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 14 16 4l12 10v14h-9v-9h-6v9H4Z"/></svg><span>首页</span></button>
+      <button data-tab="explore" onclick="MotionMobile.explore()"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="m22 10-4 8-8 4 4-8Z"/></svg><span>探索</span></button>
+      <button data-tab="records" onclick="MotionMobile.records()"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 20h5v9H4Zm9-8h5v17h-5Zm9-9h5v26h-5Z"/></svg><span>记录</span></button>
+      <button data-tab="mine" onclick="MotionMobile.mine()"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="9" r="6"/><path d="M4 29v-4c0-10 24-10 24 0v4Z"/></svg><span>我的</span></button>
+    </nav>
+    <section id="mobile-tools" class="mobile-sheet" aria-label="更多操作" hidden>
+      <div class="sheet-heading"><h2>更多操作</h2><button onclick="MotionMobile.close()" aria-label="关闭更多操作">×</button></div>
+      <p id="actionDesc" role="status"></p>
+      <div id="acts"></div>
+    </section>
+    <section id="mobile-records" class="mobile-sheet" aria-label="本机记录" hidden>
+      <div class="sheet-heading"><h2>我的记录</h2><button onclick="MotionMobile.close()" aria-label="关闭记录">×</button></div>
+      <p>已保存的原声带会保留在本机，可打开查看或再次使用。</p>
+      <button class="record-refresh" onclick="MotionMobile.refresh()">刷新记录</button>
+      <p id="mobile-record-status" role="status"></p>
+      <div id="mobile-record-list"></div>
+    </section>
+    <section id="mobile-route" class="mobile-sheet" role="dialog" aria-labelledby="mobile-route-heading" hidden>
+      <div class="sheet-heading"><h2 id="mobile-route-heading">修改地点</h2><button onclick="MotionMobile.close()" aria-label="取消地点修改">×</button></div>
+      <form class="route-form" onsubmit="return MotionMobile.saveRoute(event)" novalidate>
+        <label for="mobile-origin">出发地</label>
+        <input id="mobile-origin" name="origin" type="text" maxlength="60" required autocomplete="off" placeholder="例如：上海人民广场" enterkeyhint="next">
+        <label for="mobile-destination">目的地</label>
+        <input id="mobile-destination" name="destination" type="text" maxlength="60" required autocomplete="off" placeholder="例如：上海外滩" enterkeyhint="done">
+        <p>请填写城市和具体位置，跑步请选择同城附近地点。保存后自动规划路线，可在地图中选择方案；跨城市旅程请选择驾车。</p>
+        <p id="mobile-route-error" class="route-error" role="alert"></p>
+        <div class="route-buttons"><button type="button" onclick="MotionMobile.close()">取消</button><button type="submit">保存地点</button></div>
+      </form>
+    </section>
+    <section id="mobile-map" class="mobile-sheet" aria-label="路线与运动轨迹" hidden>
+      <div class="sheet-heading"><h2>路线与运动轨迹</h2><button onclick="MotionMobile.close()" aria-label="关闭地图">×</button></div>
+      <div id="mobile-map-expanded"></div>
+    </section>
+    <div id="mobile-map-parking" hidden>
+      <section id="mobile-map-widget" class="geo-widget">
+        <div class="geo-heading"><strong id="geo-title">高德地图</strong><button id="geo-plan" onclick="MotionMap.planRoute()">规划路线</button><button id="geo-expand" onclick="MotionMobile.openMap()">展开</button></div>
+        <div id="geo-canvas" class="geo-canvas">
+          <img id="geo-image" alt="高德地图底图" hidden>
+          <svg id="geo-lines" viewBox="0 0 500 320" aria-label="规划路线和运动轨迹"></svg>
+          <span id="geo-map-error" class="geo-map-error">正在准备高德地图</span>
+          <div class="geo-zoom"><button onclick="MotionMap.zoom(1)" aria-label="放大地图">＋</button><button onclick="MotionMap.zoom(-1)" aria-label="缩小地图">－</button><button onclick="MotionMap.fit()" aria-label="聚焦选中的路线">路线</button></div>
+        </div>
+        <div class="geo-legend"><span>彩色：选中路线</span><span>绿色：运动轨迹</span></div>
+        <div id="geo-choices" class="geo-choices" aria-label="选择规划路线" hidden></div>
+        <p id="geo-stats"></p><p id="geo-status" role="status"></p>
+        <div class="geo-actions"><button id="geo-track" onclick="MotionMap.toggleTracking()">开始记录轨迹</button><button id="geo-demo" onclick="MotionMap.demo()">模拟轨迹（调试）</button><button id="geo-return" onclick="MotionMap.returnToPlayer()" hidden>回到播放页</button><button id="geo-finish" onclick="MotionMap.finish()" hidden>结束运动</button><button id="geo-retry" onclick="MotionMap.retryMap()">重试底图</button></div>
+        <p class="geo-note">真实轨迹需要允许定位并保持页面在前台。音乐暂停不代表轨迹暂停；完成本次运动时停止记录。</p>
+      </section>
+    </div>
+  </main>
+  <div hidden aria-hidden="true" id="legacy-adapter">
+    <div id="bar"></div><div id="steps"></div><button id="prev"></button><button id="next"></button>
+  </div>
+  <noscript>请启用浏览器 JavaScript 后打开本页面。</noscript>
+  <script src="service-address.js?v=1"></script>
+  <script src="motion-score-html.js?v=4"></script>
+  <script src="ai-integration.js?v=7"></script>
+  <script src="journey-data.js?v=4"></script>
+  <script src="design-pages.js?v=7"></script>
+  <script src="mobile-app.js?v=6"></script>
+  <script src="map-integration.js?v=3"></script>
+</body>
+</html>

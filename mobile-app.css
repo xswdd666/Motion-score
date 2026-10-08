@@ -1,0 +1,56 @@
+/* A consistent viewport surrounds the unchanged original artwork. */
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101b23;color:#f4f7f8;font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button{font:inherit;cursor:pointer}
+.mobile-viewer{position:relative;display:flex;flex-direction:column;width:min(440px,calc((100dvh - 24px)*390/844));height:min(952px,calc(100dvh - 24px));margin:12px auto;overflow:hidden;background:#04131c;border:1px solid #3b4e59;border-radius:32px;box-shadow:0 12px 60px #0008}
+.mobile-status{flex:none;display:flex;justify-content:space-between;padding:12px 25px 8px;font-size:13px;line-height:20px;font-weight:600;background:#04131c}
+.mobile-status-icons{display:flex;align-items:center;gap:6px;color:#f4f7f8}
+.mobile-status-icons svg{display:block;flex:none;height:14px;fill:currentColor}
+.mobile-status-icons .status-signal{width:19px}
+.mobile-status-icons .status-wifi{width:20px}
+.mobile-status-icons .status-battery{width:28px}
+.mobile-viewer .viewer{flex:1;min-height:0;width:100%;max-width:none;margin:0;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#405463 #04131c}
+/* Keep clientWidth stable at the overflow threshold as the artwork scales. */
+@supports not (scrollbar-gutter:stable){.mobile-viewer .viewer{overflow-y:scroll}}
+.mobile-viewer .phone{width:100%;margin:0;padding:0}
+.mobile-viewer .phone .screen{position:relative;width:100%;margin:0;overflow:hidden;min-height:0}
+.mobile-viewer:not(.mobile-ready) .screen{visibility:hidden}
+.mobile-viewer .design-stage{position:absolute;max-width:none;margin:0}
+.mobile-viewer .design-art{max-width:none}
+.mobile-viewer .design-hit[data-id^="nav-"]{display:none}
+.mobile-toolbar{flex:none;display:flex;justify-content:space-between;gap:12px;padding:7px 18px;background:#061720;border-top:1px solid #17303d}
+.mobile-toolbar button{min-height:32px;padding:4px 12px;border:1px solid #294451;border-radius:18px;background:#0b222e;color:#cbd7e1;font-size:12px}
+.mobile-toolbar button:first-child{color:#d7ff5b}
+.mobile-nav{flex:none;display:grid;grid-template-columns:repeat(4,1fr);padding:10px 8px max(12px,env(safe-area-inset-bottom));background:linear-gradient(120deg,#071b26,#031018);border-top:1px solid #18313e}
+.mobile-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:56px;border:0;background:transparent;color:#c1ccdc;font-size:14px}
+.mobile-nav svg{display:block;width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.mobile-nav button[aria-current="page"]{color:#d7ff5b}
+.mobile-nav button[data-tab="home"][aria-current="page"] svg{fill:currentColor}
+button:focus-visible,a:focus-visible{outline:2px solid #d7ff5b;outline-offset:-2px}
+.mobile-notice{flex:none;padding:8px 16px;background:#152b2c;border-top:1px solid #355347;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.mobile-sheet{position:absolute;z-index:30;inset:42px 0 126px;padding:18px;overflow:auto;background:#061821f7;backdrop-filter:blur(12px);border-top:1px solid #34505e}
+.sheet-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sheet-heading h2{margin:0;font-size:22px}
+.sheet-heading button{width:40px;height:40px;border:1px solid #35505f;border-radius:50%;background:#102b38;color:#e6edf3;font-size:26px}
+.mobile-sheet p{font-size:13px;line-height:1.7;color:#bbcad6}
+.mobile-sheet #acts{display:grid;gap:10px}
+.mobile-sheet .act,.record-refresh,.record-item{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:46px;width:100%;margin:0;padding:12px;border:1px solid #35505f;border-radius:12px;background:#102b38;color:#f4f7f8;font-size:14px;text-decoration:none;text-align:left}
+.mobile-sheet a{color:#d7ff5b}
+.record-refresh{width:auto;margin:0 0 12px;font-size:12px;min-height:36px}
+#mobile-record-list{display:grid;gap:10px}
+.record-item{display:block}
+.record-item strong,.record-item span{display:block;overflow-wrap:anywhere}
+.record-item span{margin-top:8px;color:#aebfd0;font-size:12px;line-height:1.5}
+.record-empty{padding:26px 10px;text-align:center;color:#bac9d5;font-size:14px;line-height:1.8}
+.route-form{display:grid;gap:12px;margin-top:22px}
+.route-form label{font-size:14px;color:#c9d6e2}
+.route-form input{width:100%;min-width:0;min-height:48px;padding:12px;border:1px solid #405a69;border-radius:12px;background:#0b2532;color:#f4f7f8;font:inherit;font-size:16px}
+.route-form input:focus{outline:2px solid #d7ff5b;outline-offset:1px}
+.route-form p{margin:2px 0}
+.route-form .route-error{color:#ffb69d;min-height:20px}
+.route-buttons{display:flex;gap:12px}
+.route-buttons button{flex:1;min-height:46px;border:1px solid #3b5866;border-radius:24px;background:#102b38;color:#f4f7f8}
+.route-buttons button[type="submit"]{background:#d7ff5b;color:#0c191e;border-color:#d7ff5b;font-weight:600}
+@media(max-width:500px){.mobile-viewer{width:100%;height:100dvh;max-height:none;margin:0;border:0;border-radius:0;box-shadow:none}.mobile-status{padding-top:max(12px,env(safe-area-inset-top))}.mobile-sheet{bottom:calc(126px + env(safe-area-inset-bottom))}}
