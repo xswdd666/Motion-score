@@ -1,0 +1,85 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const {harness,boot}=require('./test_original_ui.cjs');
+const root=path.resolve(__dirname,'..');
+const route={provider:'amap',coordinateSystem:'GCJ02',mode:'run',origin:{name:'测试起点',location:[121.4737,31.2304]},destination:{name:'测试终点',location:[121.4741,31.2304]},path:[[121.4737,31.2304],[121.4741,31.2304]],distanceMeters:40,durationSeconds:30};
+const alternate={...route,path:[[121.4737,31.2304],[121.4739,31.2307],[121.4741,31.2304]],distanceMeters:120,durationSeconds:90};
+async function main(){
+  const a=harness(),events={},listeners={},watches=[];
+  const node=()=>({style:{},attrs:{},setAttribute(k,v){this.attrs[k]=v;},childNodes:[],hidden:true,innerHTML:'',textContent:'',value:'',clientWidth:390,focus(){},select(){},querySelectorAll(){return[];},appendChild(child){child.parentNode=this;this.childNodes.push(child);}});
+  for(const id of ['mobile-tools','mobile-route','mobile-records','mobile-record-list','mobile-record-status','mobile-content','mobile-primary','mobile-notice','mobile-nav','mobile-origin','mobile-destination','mobile-route-error','mobile-map','mobile-map-summary','mobile-map-parking','mobile-map-expanded','mobile-map-widget','mobile-map-link','geo-title','geo-plan','geo-expand','geo-image','geo-lines','geo-map-error','geo-stats','geo-status','geo-track','geo-demo','geo-retry','geo-finish','geo-return'])a.nodes.set('#'+id,node());
+  const canvas=node();canvas.clientWidth=500;canvas.clientHeight=320;a.nodes.set('#geo-canvas',canvas);
+  a.nodes.set('#geo-choices',node());
+  a.context.navigator={geolocation:{watchPosition(success,error){const item={success,error,cleared:false};watches.push(item);return watches.length-1;},clearWatch(id){watches[id].cleared=true;}}};
+  a.context.window.isSecureContext=true;a.context.window.addEventListener=(name,fn)=>{events[name]=fn;};
+  a.context.document.addEventListener=(name,fn)=>{listeners[name]=fn;};
+  const fakeFetch=a.context.fetch;let failConvert=false,failRoute=false,routeCalls=0,alternativeCount=2,delayRoute=null;
+  a.context.fetch=async(url,options={})=>{
+    const body=options.body?JSON.parse(options.body):null;
+    if(url==='/api/map/config')return{ok:true,json:async()=>({configured:true})};
+    if(url==='/api/map/route'){
+      routeCalls++;
+      const response={ok:!failRoute,json:async()=>failRoute?{error:'这两个地点之间没有找到路线。'}:structuredClone({...route,alternatives:[route,alternate].slice(0,alternativeCount)})};
+      return delayRoute?new Promise(resolve=>{delayRoute.resolve=()=>resolve(response);}):response;
+    }
+    if(url==='/api/map/convert')return{ok:!failConvert,json:async()=>failConvert?{error:'坐标转换失败'}:{points:body.points}};
+    return fakeFetch(url,options);
+  };
+  boot(a);vm.runInContext(fs.readFileSync(path.join(root,'mobile-app.js'),'utf8'),a.context);
+  vm.runInContext(fs.readFileSync(path.join(root,'map-integration.js'),'utf8'),a.context);
+  const m=a.context.window.MotionMobile,map=a.context.window.MotionMap,ai=a.context.window.MotionScoreAI,j=a.context.window.MotionJourney,d=a.context.window.MotionDesign;
+  await map.ready;m.activate('start');m.activate('start');assert(routeCalls>0,'Entering setup did not automatically plan');
+  const beforeEdit=routeCalls;d.setRoute('测试起点','测试终点');assert(routeCalls>beforeEdit,'Changing endpoints did not plan again');await map.planRoute();
+  assert.equal(a.nodes.get('#mobile-map-widget').parentNode,a.nodes.get('#screen').querySelector('.design-stage'));
+  a.nodes.get('#geo-image').onload();assert(a.nodes.get('#geo-lines').innerHTML.includes('geo-route-selected'));
+  assert(a.nodes.get('#geo-lines').innerHTML.includes('geo-route-alternative'));assert(a.nodes.get('#geo-choices').innerHTML.includes('路线 2'));
+  map.selectRoute(1);assert.equal(map.getState().selected,1);assert(a.nodes.get('#geo-status').textContent.includes('已选路线 2'));
+  a.nodes.get('#geo-image').onload();
+  const fitted=map.getState().displayView,fitCenter=map.world(fitted.center,fitted.zoom);
+  for(const p of alternate.path){const [x,y]=map.world(p,fitted.zoom);assert(x-fitCenter[0]+250>20 && x-fitCenter[0]+250<480);assert(y-fitCenter[1]+fitted.height/2>80 && y-fitCenter[1]+fitted.height/2<fitted.height-20,'Selected line was outside visible map');}
+  await m.activate('start');assert.equal(vm.runInContext('at',a.context),2);assert.equal(map.getState().session.route.distanceMeters,120);
+  assert(!map.getState().session.route.alternatives,'Unselected alternatives copied into activity');
+  m.activate('play');a.advance(1000);assert.equal(ai.getPosition().elapsed,1,'Map edition must use real playback time');
+  m.openMap();assert.equal(vm.runInContext('state.playing',a.context),true,'Opening live map paused music');
+  // A tall panel needs a matching base map and SVG coordinate frame, not a stretched image.
+  canvas.clientWidth=360;canvas.clientHeight=420;events.resize();
+  assert(a.nodes.get('#geo-image').src.includes('height=583'));
+  assert.equal(map.getState().displayView.height,320,'Overlay changed frame before the new imagery loaded');
+  a.nodes.get('#geo-image').onload();assert.equal(a.nodes.get('#geo-lines').attrs.viewBox,'0 0 500 583');
+  const displayed=map.getState().displayView,center=map.world(displayed.center,displayed.zoom),origin=map.world(route.path[0],displayed.zoom);
+  assert(a.nodes.get('#geo-lines').innerHTML.includes(`cy="${origin[1]-center[1]+583/2}"`),'Portrait pins lost alignment');
+  canvas.clientWidth=500;canvas.clientHeight=320;m.close();
+  a.nodes.get('#geo-image').onload();assert.equal(a.nodes.get('#geo-lines').attrs.viewBox,'0 0 500 320');m.openMap();
+  map.toggleTracking();assert(map.getState().active);assert.equal(watches.length,1);
+  const position=(lng,lat,time,accuracy=5)=>({coords:{longitude:lng,latitude:lat,accuracy},timestamp:time});
+  watches[0].success(position(121.4737,31.2304,1600000000000));await map.settle();
+  watches[0].success(position(121.4741,31.2304,1600000006000));await map.settle();
+  assert.equal(map.snapshot().track.points.length,2);
+  watches[0].success(position(130,40,1600000012000));watches[0].success(position(121.4741,31.2304,1600000012000));
+  watches[0].success(position(121.4745,31.2304,1600000012000,300));await map.settle();assert.equal(map.snapshot().track.points.length,2,'Drift or low-quality GPS accepted');
+  map.toggleTracking();assert(watches[0].cleared);watches[0].success(position(121.4751,31.2304,1600000018000));await map.settle();assert.equal(map.snapshot().track.points.length,2,'Late GPS callback mutated a paused track');
+  map.toggleTracking();watches[1].success(position(121.48,31.24,1600000020000));await map.settle();assert(map.snapshot().track.points[2].segment>map.snapshot().track.points[1].segment);
+  failConvert=true;watches[1].success(position(121.4804,31.24,1600000026000));await map.settle();assert.equal(map.snapshot().track.points.length,3);assert(map.getState().status.includes('没有记入'));
+  failConvert=false;watches[1].success(position(121.4808,31.24,1600000032000));await map.settle();assert.equal(map.snapshot().track.points.length,4);assert(map.snapshot().track.points[3].segment>map.snapshot().track.points[2].segment);
+  a.context.document.visibilityState='hidden';listeners.visibilitychange();assert(!map.getState().active);assert(watches[1].cleared);
+  assert(map.hasUnfinishedTrack());const previousId=ai.getSession().id;m.close();m.home();m.activate('start');m.activate('start');await m.activate('start');assert.equal(ai.getSession().id,previousId,'New generation discarded unfinished track');
+  map.returnToPlayer();map.finish();assert(ai.getSession().finished);assert.equal(vm.runInContext('at',a.context),3);
+  assert(map.getState().status.includes('已结束'));
+  await m.primary();const saved=j.getRecords()[0];assert.equal(saved.geo.track.points.length,4);assert.equal(saved.geo.track.mode,'gps');
+  assert.equal(saved.geo.route.distanceMeters,120,'Saved activity lost selected route');
+  m.records();await m.openRecord(0);assert.equal(a.nodes.get('#mobile-map-widget').parentNode,a.nodes.get('#mobile-map-summary'));
+  a.nodes.get('#geo-image').onload();assert(a.nodes.get('#geo-lines').innerHTML.includes('#b8f536'));assert(a.nodes.get('#geo-track').hidden);
+  const oldZoom=map.getState().view.zoom;map.zoom(-1);assert.equal(map.getState().view.zoom,oldZoom-1);map.fit();
+  m.home();m.activate('start');m.activate('start');await m.activate('start');map.toggleTracking();watches.at(-1).error({code:1});assert(!map.getState().active);assert(map.getState().status.includes('定位被拒绝'));
+  map.demo();a.advance(8000);assert.equal(map.snapshot().track.mode,'demo');assert(map.snapshot().track.points.length>1);map.finish();await m.primary();assert(j.getRecords().some(r=>r.geo?.track.mode==='demo'));
+  m.home();m.primary();await m.activate('start');assert.equal(map.snapshot(),null,'Indoor saved an outdoor track');
+  m.home();m.activate('start');m.activate('start');await map.planRoute();
+  failRoute=true;d.setRoute('无效出发地','无效目的地');await map.planRoute();
+  const beforeFailure=ai.getSession().id;await m.activate('start');assert.equal(vm.runInContext('at',a.context),8);assert.equal(ai.getSession().id,beforeFailure,'Failed route still started music');
+  assert(d.getMessage().includes('没有找到路线'));assert(a.nodes.get('#geo-choices').hidden);assert(!a.nodes.get('#geo-lines').innerHTML.includes('geo-route-selected'),'Old route drawn for changed endpoints');
+  failRoute=false;alternativeCount=1;await map.planRoute();assert(a.nodes.get('#geo-choices').innerHTML.includes('推荐路线'));assert(a.nodes.get('#geo-status').textContent.includes('1 条路线'));
+  delayRoute={};d.setRoute('晚到的起点','晚到的终点');const pending=map.planRoute();m.home();delayRoute.resolve();await pending;delayRoute=null;
+  assert.equal(vm.runInContext('at',a.context),0,'Late planning navigated away from home');
+  assert.equal(map.world([0,0],0)[0],128);assert.equal(map.world([0,0],0)[1],128);
+  console.log('PASS: automatic planning, alternative selection/focus, failed-route blocking, stale results, selected-route saving; responsive map alignment; GPS/demo recording and journey flows.');
+}
+main().catch(error=>{console.error(error);process.exitCode=1;});
